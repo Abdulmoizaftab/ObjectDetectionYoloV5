@@ -255,4 +255,4 @@ crashlytics-build.properties
 fabric.properties
 
 #Video-Inference
-video-inference/
+video-inference/*
