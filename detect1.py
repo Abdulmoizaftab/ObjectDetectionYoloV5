@@ -36,6 +36,7 @@ import torch
 import torch.backends.cudnn as cudnn
 import threading
 import time
+from datetime import datetime, timedelta
 
 from SqlLog import cursor
 from SqlLog import cnxn
@@ -52,6 +53,7 @@ from utils.general import (LOGGER, check_file, check_img_size, check_imshow, che
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
+IP="192.168.1.19"
 class DetectionClass:
     ODetection=""
     Person=0
@@ -62,11 +64,14 @@ class DetectionClass:
     Violence=0
     Fire=0
     Score=0
+    time_now=0
+    detected_time=datetime.now()
+    res=datetime.now()
 Detection = DetectionClass()
 @torch.no_grad()
 def run(
         weights='yolov5m_Objects365.pt',  # model.pt path(s)
-        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=2subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data='H:/Python/yolov5-master/data/coco2.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -212,8 +217,21 @@ def run(
                 z=x
                 y=z.split(" ")
                 val = int(y[0])
+                countP=val
                 if 'Person' in x:
+                    # time_now=datetime.now().strftime("%H:%M:%S")
+                    if DetectionClass.time_now==0:
+                        DetectionClass.time_now+=1
+                        DetectionClass.detected_time=datetime.now()
+                        DetectionClass.res=DetectionClass.detected_time+timedelta(minutes=5)
+                    if DetectionClass.detected_time.time()>DetectionClass.res.time():
+                        print("Person is here for some time : ",DetectionClass.detected_time)
+                    DetectionClass.detected_time=datetime.now()
                     DetectionClass.Person=val
+                elif 'Person' not in x:
+                    DetectionClass.time_now==0
+                    DetectionClass.detected_time=datetime.now()
+                    DetectionClass.res=DetectionClass.detected_time+timedelta(minutes=5)
                 elif 'Helmet' in x:
                     DetectionClass.Helmet=val
                 elif 'Gun' in x:
@@ -227,7 +245,7 @@ def run(
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='yolov5m_Objects365.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--source', type=str, default='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--data', type=str, default='H:/Python/yolov5-master/data/coco2.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
@@ -265,7 +283,7 @@ def main(opt):
 
 def run1(
         weights='v5.pt',  # model.pt path(s)
-        source='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data='H:/Python/yolov5-master/data/coco2.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -423,7 +441,7 @@ def run1(
 def parse_opt1():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='v5.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--source', type=str, default='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--data', type=str, default='H:/Python/yolov5-master/data/coco2.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
@@ -466,7 +484,7 @@ def main1(opt1):
 
 def run2(
         weights='violence_colab.pt',  # model.pt path(s)
-        source='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data='H:/Python/yolov5-master/data/coco2.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -624,7 +642,7 @@ def run2(
 def parse_opt2():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='violence_colab.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--source', type=str, default='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--data', type=str, default='H:/Python/yolov5-master/data/coco2.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
@@ -664,7 +682,7 @@ def main2(opt1):
 
 def run3(
         weights='fire_colab.pt',  # model.pt path(s)
-        source='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data='H:/Python/yolov5-master/data/coco2.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -829,7 +847,7 @@ def run3(
 def parse_opt3():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='fire_colab.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--source', type=str, default='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--data', type=str, default='H:/Python/yolov5-master/data/coco2.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
@@ -870,7 +888,7 @@ def main3(opt):
 
 def run4(
         weights='mask_colab.pt',  # model.pt path(s)
-        source='rtsp://ali:Ali@12345@192.168.1.110/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data='H:/Python/yolov5-master/data/coco2.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -1045,7 +1063,7 @@ def run4(
                     print("Mask is detected")
                     DetectionClass.Mask=val
         DetectionClass.Score = ((DetectionClass.Person*1)+(DetectionClass.Helmet*2)+(DetectionClass.Mask*2)+(DetectionClass.Knife*3)+(DetectionClass.PistolOrGun*3)+(DetectionClass.Violence*4)+(DetectionClass.Fire*5))
-        cursor.execute("""Insert into Object_Detection (Did,ODetection,Person,Helmet,Mask,Knife,PistolORGun,Violence,Fire,Score,DateTimee) values ({},'{}',{},{},{},{},{},{},{},{},{});""".format(1,"Cam1",DetectionClass.Person,DetectionClass.Helmet,DetectionClass.Mask,DetectionClass.Knife,DetectionClass.PistolOrGun,DetectionClass.Violence,DetectionClass.Fire,DetectionClass.Score,'CURRENT_TIMESTAMP'))
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Person,Helmet,Mask,Knife,PistolORGun,Violence,Fire,Score,DateTimee,IP) values ({},'{}',{},{},{},{},{},{},{},{},{},'{}');""".format(0,"Cam1",DetectionClass.Person,DetectionClass.Helmet,DetectionClass.Mask,DetectionClass.Knife,DetectionClass.PistolOrGun,DetectionClass.Violence,DetectionClass.Fire,DetectionClass.Score,'CURRENT_TIMESTAMP',IP))
         cnxn.commit()
         # torch.cuda.empty_cache()
         # time.sleep(1)
