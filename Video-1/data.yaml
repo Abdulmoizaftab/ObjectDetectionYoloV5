@@ -1,0 +1,17 @@
+names:
+- ATM Machine
+- ATM Open
+- ATM open
+- Bag
+- Gloves
+- Hammer
+- Hood
+- Machine
+- Machine-
+- Monitor
+- Person
+- Robber-Mask
+- Wire
+nc: 13
+train: Video-1/train/images
+val: Video-1/valid/images

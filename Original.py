@@ -34,6 +34,7 @@ from SqlLog import cnxn
 
 import torch
 import torch.backends.cudnn as cudnn
+import time
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -48,11 +49,11 @@ from utils.general import (LOGGER, check_file, check_img_size, check_imshow, che
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
-
+IP="192.168.1.19"
 @torch.no_grad()
 def run(
         weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
-        source='rtsp://admin:Admin@123@192.168.1.111/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
+        source='rtsp://admin:dev@2022@192.168.1.19/cam/realmonitor?channel=1subtype=1',  # file/dir/URL/glob, 0 for webcam
         data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.20,  # confidence threshold
@@ -181,8 +182,8 @@ def run(
                     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
                     
-                cv2.imshow(str(p), im0)
-                cv2.waitKey(10000)  # 1 millisecond
+                # cv2.imshow(str(p), im0)
+                # cv2.waitKey(10000)  # 1 millisecond
 
             # Save results (image with detections)
             if save_img:
@@ -206,8 +207,21 @@ def run(
 
         # Print time (inference-only)
         LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
-        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee) values ({},'{}',{},{});""".format(2,"CAM2 from GPU",10,'CURRENT_TIMESTAMP'))
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(0,"CAM1 OF NVR from GPU",10,'CURRENT_TIMESTAMP','192.168.1.19'))
         cnxn.commit()
+        time.sleep(5)
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(1,"CAM2 OF NVR from GPU",15,'CURRENT_TIMESTAMP','192.168.1.19'))
+        cnxn.commit()
+        time.sleep(5)
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(2,"CAM3 OF NVR from GPU",20,'CURRENT_TIMESTAMP','192.168.1.19'))
+        cnxn.commit()
+        time.sleep(5)
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(0,"CAM4 OF CAMERA from GPU",80,'CURRENT_TIMESTAMP','192.168.1.110'))
+        cnxn.commit()
+        time.sleep(5)
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(0,"CAM5 OF CAMERA from GPU",40,'CURRENT_TIMESTAMP','192.168.1.111'))
+        cnxn.commit()
+
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image

@@ -1,0 +1,33 @@
+names:
+- Alshifa Honey
+- Apple Fruit
+- Banana Fruit
+- Blue Band
+- Bread
+- Clear Shampoo
+- DairyOmang
+- Haleeb Milk
+- Head - Shoulder
+- Hub Salt
+- Lady-Finger V
+- Nestle MilkPack
+- Nurpur Milk
+- Olpers Milk
+- Orange Fruit
+- Papaya Fruit
+- Pistachios DF
+- Rusk
+- Sensodyne
+- Shangrila Ketchup
+- Spaghetti
+- TUCBiscuit
+nc: 22
+roboflow:
+  license: CC BY 4.0
+  project: productsdetection-y2awi
+  url: https://universe.roboflow.com/project/productsdetection-y2awi/dataset/1
+  version: 1
+  workspace: project
+test: ../test/images
+train: ProductsDetection-1/train/images
+val: ProductsDetection-1/valid/images

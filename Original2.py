@@ -48,7 +48,7 @@ from utils.general import (LOGGER, check_file, check_img_size, check_imshow, che
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
-
+IP="192.168.1.19"
 @torch.no_grad()
 def run(
         weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
@@ -208,7 +208,7 @@ def run(
         
 
         LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
-        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee) values ({},'{}',{},{});""".format(1,"CAM1 from GPU",15,'CURRENT_TIMESTAMP'))
+        cursor.execute("""Insert into Object_Detection (Did,ODetection,Score,DateTimee,IP) values ({},'{}',{},{},'{}');""".format(1,"CAM2 OF NVR from GPU",15,'CURRENT_TIMESTAMP',IP))
         cnxn.commit()
 
     # Print results
